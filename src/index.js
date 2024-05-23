@@ -1,1 +1,3 @@
-console.log('first time');
+import { setupServer } from './server.js';
+
+setupServer();
