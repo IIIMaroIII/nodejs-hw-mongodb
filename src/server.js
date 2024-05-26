@@ -14,7 +14,13 @@ export const setupServer = () => {
 
   app.get('/', (req, res) => {
     res.json({
-      message: 'Here`s my first backends answer',
+      name: 'Yulia Shevchenko',
+      phoneNumber: '+380000000001',
+      email: 'oleh1@example.com',
+      isFavourite: false,
+      contactType: 'personal',
+      createdAt: '2024-05-08T16:12:14.954151',
+      updatedAt: '2024-05-08T16:12:14.954158',
     });
   });
 
