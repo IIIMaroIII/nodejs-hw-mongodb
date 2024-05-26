@@ -3,6 +3,7 @@ import cors from 'cors';
 import { envPort } from './utils/envPort.js';
 import { ENV_VARS } from './constants/constants.js';
 import { logger } from './utils/pino.js';
+import mongoose from 'mongoose';
 
 export const setupServer = () => {
   const app = express();
@@ -21,8 +22,19 @@ export const setupServer = () => {
     });
   });
 
-  app.listen(
-    envPort(ENV_VARS.PORT, 3000),
-    console.log(`Server is running on ${process.env[ENV_VARS.PORT]}`),
-  );
+  mongoose
+    .connect(process.env[ENV_VARS.MONGODB_URL])
+    .then(() => {
+      app.listen(
+        envPort(ENV_VARS.PORT, 3000),
+        console.log(`Server is running on ${process.env[ENV_VARS.PORT]}`),
+      );
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
+
+// mongoDB_user = rodionmeuro
+// mongoDB_password = 2WY4iw44GJWziHo8
+//2WY4iw44GJWziHo8
