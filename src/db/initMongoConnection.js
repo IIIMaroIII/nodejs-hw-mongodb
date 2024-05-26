@@ -11,7 +11,7 @@ export const initMongoConnection = async () => {
   )}?retryWrites=true&w=majority&appName=Cluster0`;
   try {
     await mongoose.connect(connectionLink);
-    console.log('Successfully database connection');
+    console.log(`Successfully connected to ${env(MONGODB_DB)}`);
   } catch (error) {
     throw new Error(error);
   }
