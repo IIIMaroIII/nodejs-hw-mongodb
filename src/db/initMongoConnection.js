@@ -13,6 +13,6 @@ export const initMongoConnection = async () => {
     await mongoose.connect(connectionLink);
     console.log('Successfully database connection');
   } catch (error) {
-    console.log(error);
+    throw new Error(error);
   }
 };
