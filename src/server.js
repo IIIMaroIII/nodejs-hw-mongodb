@@ -13,7 +13,9 @@ export const setupServer = () => {
   app.use(express.json());
 
   app.get('/', (req, res) => {
-    res.send('Hello world');
+    res.json({
+      message: 'Here`s my first backends answer',
+    });
   });
 
   app.use((req, res) => {
