@@ -3,7 +3,7 @@ import cors from 'cors';
 import { logger } from './utils/pino.js';
 import { env } from './utils/env.js';
 import { ENV_VARS } from './constants/constants.js';
-import { contactsRouter } from './routes/api/contacts.js';
+import { contactsRouters } from './routes/api/contactsRoutes.js';
 import { HttpError } from './utils/HttpError.js';
 
 export const setupServer = () => {
@@ -13,11 +13,11 @@ export const setupServer = () => {
   app.use(cors());
   app.use(express.json());
 
-  app.get('/', contactsRouter);
+  app.get('/', contactsRouters);
 
-  app.get('/contacts', contactsRouter);
+  app.get('/contacts', contactsRouters);
 
-  app.get('/contacts/:contactId', contactsRouter);
+  app.get('/contacts/:contactId', contactsRouters);
 
   app.use((req, res, next) => {
     next(HttpError(404, 'Not found!'));
