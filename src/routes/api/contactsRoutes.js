@@ -3,9 +3,9 @@ import { getAllContacts, getContactById } from '../../services/contacts.js';
 import mongoose from 'mongoose';
 import { HttpError } from '../../utils/HttpError.js';
 
-export const contactsRouter = express.Router();
+export const contactsRouters = express.Router();
 
-contactsRouter.get('/', (req, res, next) => {
+contactsRouters.get('/', (req, res, next) => {
   try {
     res.json({
       status: '200',
@@ -16,7 +16,7 @@ contactsRouter.get('/', (req, res, next) => {
   }
 });
 
-contactsRouter.get('/contacts', async (req, res, next) => {
+contactsRouters.get('/contacts', async (req, res, next) => {
   try {
     const result = await getAllContacts();
     res.json({
@@ -29,7 +29,7 @@ contactsRouter.get('/contacts', async (req, res, next) => {
   }
 });
 
-contactsRouter.get('/contacts/:contactId', async (req, res, next) => {
+contactsRouters.get('/contacts/:contactId', async (req, res, next) => {
   try {
     const { contactId } = req.params;
 
