@@ -1,9 +1,10 @@
 import express from 'express';
 import cors from 'cors';
-import { envPort } from './utils/envPort.js';
-import { ENV_VARS } from './constants/constants.js';
 import { logger } from './utils/pino.js';
-import mongoose from 'mongoose';
+import { env } from './utils/env.js';
+import { ENV_VARS } from './constants/constants.js';
+import { contactsRouter } from './routes/api/contacts.js';
+import { HttpError } from './utils/HttpError.js';
 
 export const setupServer = () => {
   const app = express();
@@ -12,31 +13,27 @@ export const setupServer = () => {
   app.use(cors());
   app.use(express.json());
 
-  app.get('/', (req, res) => {
-    res.json({
-      message: 'Here`s my first backends answer',
+  app.get('/', contactsRouter);
+
+  app.get('/contacts', contactsRouter);
+
+  app.get('/contacts/:contactId', contactsRouter);
+
+  app.use((req, res, next) => {
+    next(HttpError(404, 'Not found!'));
+  });
+
+  app.use((err, req, res, next) => {
+    const { status = 500, message = 'Server error!', data = null } = err;
+    res.status(status).json({
+      status,
+      message,
+      data,
     });
   });
 
-  app.use((req, res) => {
-    res.status(404).json({
-      message: 'Not found!',
-    });
-  });
-
-  mongoose
-    .connect(process.env[ENV_VARS.MONGODB_URL])
-    .then(() => {
-      app.listen(
-        envPort(ENV_VARS.PORT, 3000),
-        console.log(`Server is running on ${process.env[ENV_VARS.PORT]}`),
-      );
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+  app.listen(
+    env(ENV_VARS.PORT, 3000),
+    console.log(`Server is running on ${env(ENV_VARS.PORT)}`),
+  );
 };
-
-// mongoDB_user = rodionmeuro
-// mongoDB_password = 2WY4iw44GJWziHo8
-//2WY4iw44GJWziHo8
