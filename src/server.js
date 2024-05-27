@@ -3,6 +3,8 @@ import cors from 'cors';
 import { logger } from './utils/pino.js';
 import { env } from './utils/env.js';
 import { ENV_VARS } from './constants/constants.js';
+import { contactsRouter } from './routes/api/contacts.js';
+import { HttpError } from './utils/HttpError.js';
 
 export const setupServer = () => {
   const app = express();
@@ -11,17 +13,22 @@ export const setupServer = () => {
   app.use(cors());
   app.use(express.json());
 
-  app.get('/', (req, res) => {
-    res.json({
-      name: 'Yulia Shevchenko',
-      phoneNumber: '+380000000001',
-      email: 'oleh1@example.com',
-    });
+  app.get('/', contactsRouter);
+
+  app.get('/contacts', contactsRouter);
+
+  app.get('/contacts/:contactId', contactsRouter);
+
+  app.use((req, res, next) => {
+    next(HttpError(404, 'Not found!'));
   });
 
-  app.use((req, res) => {
-    res.status(404).json({
-      message: 'Not found!',
+  app.use((err, req, res, next) => {
+    const { status = 500, message = 'Server error!', data = null } = err;
+    res.status(status).json({
+      status,
+      message,
+      data,
     });
   });
 
