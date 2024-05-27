@@ -1,15 +1,10 @@
 import express from 'express';
-
-import {
-  contactById,
-  contactsPage,
-  homePage,
-} from '../../controllers/contactsController.js';
+import { ctrl } from '../../controllers/contactsController.js';
 
 export const contactsRouters = express.Router();
 
-contactsRouters.get('/', homePage);
+contactsRouters.get('/', ctrl.homePage);
 
-contactsRouters.get('/contacts', contactsPage);
+contactsRouters.get('/contacts', ctrl.contactsPage);
 
-contactsRouters.get('/contacts/:contactId', contactById);
+contactsRouters.get('/contacts/:contactId', ctrl.contactById);
