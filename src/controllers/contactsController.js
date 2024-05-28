@@ -31,12 +31,14 @@ const contactById = async (req, res, next) => {
     const { contactId } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(contactId)) {
-      throw HttpError(404, `The ${contactId} has not validated!`);
+      return next(HttpError(404, `The ${contactId} has not validated!`));
     }
     const result = await Collection.getContactById(contactId);
 
     if (!result) {
-      throw HttpError(404, `The contact with ${contactId} was not found!`);
+      return next(
+        HttpError(404, `The contact with ${contactId} was not found!`),
+      );
     }
     res.json({
       status: '200',

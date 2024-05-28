@@ -13,11 +13,11 @@ export const setupServer = () => {
   app.use(cors());
   app.use(express.json());
 
-  app.get('/', contactsRouters);
+  app.use(contactsRouters);
 
-  app.get('/contacts', contactsRouters);
+  app.use(contactsRouters);
 
-  app.get('/contacts/:contactId', contactsRouters);
+  app.use(contactsRouters);
 
   app.use((req, res, next) => {
     next(HttpError(404, 'Not found!'));
