@@ -3,7 +3,7 @@ import cors from 'cors';
 import { logger } from './utils/pino.js';
 import { env } from './utils/env.js';
 import { ENV_VARS } from './constants/constants.js';
-import { contactsRouters } from './routes/api/contactsRoutes.js';
+import { contactsRouter } from './routes/api/contactsRoute.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 
@@ -14,7 +14,7 @@ export const setupServer = () => {
   app.use(cors());
   app.use(express.json());
 
-  app.use(contactsRouters);
+  app.use(contactsRouter);
 
   app.use(notFoundHandler);
 
