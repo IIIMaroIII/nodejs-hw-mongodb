@@ -6,9 +6,11 @@ export const contactsRouter = express.Router();
 
 contactsRouter.get('/', ctrlWrapper(ctrl.homeController));
 
-contactsRouter.get('/contacts', ctrlWrapper(ctrl.allContactsController));
+contactsRouter.get('/contacts', ctrlWrapper(ctrl.getAllContactsController));
 
 contactsRouter.get(
   '/contacts/:contactId',
-  ctrlWrapper(ctrl.contactByIdController),
+  ctrlWrapper(ctrl.getContactByIdController),
 );
+
+contactsRouter.post('/contacts', ctrlWrapper(ctrl.addNewContactController));
