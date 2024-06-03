@@ -3,8 +3,9 @@ import cors from 'cors';
 import { logger } from './utils/pino.js';
 import { env } from './utils/env.js';
 import { ENV_VARS } from './constants/constants.js';
-import { contactsRouters } from './routes/api/contactsRoutes.js';
-import { HttpError } from './utils/HttpError.js';
+import { contactsRouter } from './routes/api/contactsRoute.js';
+import { errorHandler } from './middlewares/errorHandler.js';
+import { notFoundHandler } from './middlewares/notFoundHandler.js';
 
 export const setupServer = () => {
   const app = express();
@@ -13,24 +14,11 @@ export const setupServer = () => {
   app.use(cors());
   app.use(express.json());
 
-  app.get('/', contactsRouters);
+  app.use(contactsRouter);
 
-  app.get('/contacts', contactsRouters);
+  app.use(notFoundHandler);
 
-  app.get('/contacts/:contactId', contactsRouters);
-
-  app.use((req, res, next) => {
-    next(HttpError(404, 'Not found!'));
-  });
-
-  app.use((err, req, res, next) => {
-    const { status = 500, message = 'Server error!', data = null } = err;
-    res.status(status).json({
-      status,
-      message,
-      data,
-    });
-  });
+  app.use(errorHandler);
 
   app.listen(
     env(ENV_VARS.PORT, 3000),
