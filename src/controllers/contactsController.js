@@ -2,6 +2,8 @@ import mongoose from 'mongoose';
 import { HttpError } from '../utils/HttpError.js';
 import { contactsServices } from '../services/contactsServices.js';
 import { ResponseMaker } from '../utils/responseMaker.js';
+import { validateMongooseId } from '../utils/validateMongooseId.js';
+import { handleIdWasntFound } from '../utils/handleIdWasntFound.js';
 
 const homeController = (req, res) => {
   res.json(ResponseMaker(200, 'Hello, this is my first backend`s answer!'));
@@ -32,9 +34,37 @@ const getContactByIdController = async (req, res, next) => {
   );
 };
 
-const addNewContactController = async (req, res, next) => {
+const addNewContactController = async (req, res) => {
   const result = await contactsServices.addNewContact(req.body);
   res.json(ResponseMaker(201, 'Successfully created a contact!', result));
+};
+
+const updateContactController = async (req, res, next) => {
+  const { body } = req;
+  const { contactId } = req.params;
+
+  validateMongooseId(contactId, next);
+
+  const result = await contactsServices.updateContact(contactId, body);
+
+  handleIdWasntFound(result, contactId, next);
+
+  res.json(ResponseMaker(200, 'Successfully patched a contact!', result));
+};
+
+const deleteContactController = async (req, res, next) => {
+  const { contactId } = req.params;
+
+  validateMongooseId(contactId, next);
+
+  const result = await contactsServices.deleteContact(contactId);
+
+  if (!handleIdWasntFound(result, contactId, next)) {
+    return;
+  }
+  res.json(
+    ResponseMaker(200, 'Contact has been successfully deleted!', result),
+  );
 };
 
 export const ctrl = {
@@ -42,4 +72,6 @@ export const ctrl = {
   getAllContactsController,
   getContactByIdController,
   addNewContactController,
+  updateContactController,
+  deleteContactController,
 };

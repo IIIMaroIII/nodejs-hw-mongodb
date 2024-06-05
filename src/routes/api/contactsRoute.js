@@ -14,3 +14,13 @@ contactsRouter.get(
 );
 
 contactsRouter.post('/contacts', ctrlWrapper(ctrl.addNewContactController));
+
+contactsRouter.patch(
+  '/contacts/:contactId',
+  ctrlWrapper(ctrl.updateContactController),
+);
+
+contactsRouter.delete(
+  '/contacts/:contactId',
+  ctrlWrapper(ctrl.deleteContactController),
+);

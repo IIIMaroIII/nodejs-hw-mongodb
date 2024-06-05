@@ -8,8 +8,19 @@ const getContactById = async (id) =>
 const addNewContact = async (payload) =>
   await ContactCollection.create(payload);
 
+const updateContact = async (id, payload, options = {}) =>
+  await ContactCollection.findByIdAndUpdate(id, payload, {
+    new: true,
+    ...options,
+  });
+
+const deleteContact = async (id) =>
+  (await ContactCollection.findByIdAndDelete(id)) || null;
+
 export const contactsServices = {
   getAllContacts,
   getContactById,
   addNewContact,
+  updateContact,
+  deleteContact,
 };
