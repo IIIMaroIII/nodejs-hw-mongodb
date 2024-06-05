@@ -1,19 +1,23 @@
 import { Schema, model } from 'mongoose';
+import { handleMongooseError } from '../../utils/handleMongooseError.js';
 
 const contactSchema = new Schema(
   {
-    _id: { type: Schema.Types.ObjectId, required: true },
-    name: { type: String, required: true },
-    phoneNumber: { type: String, required: true },
-    email: { type: String, required: true },
-    isFavourite: { type: Boolean, required: true, default: false },
+    name: { type: String, required: [true, 'Name is required!'] },
+    phoneNumber: {
+      type: String,
+      required: [true, 'Phone number is required!'],
+    },
+    email: { type: String },
+    isFavourite: { type: Boolean, default: false },
     contactType: {
       type: String,
       enum: ['work', 'home', 'personal'],
-      required: true,
     },
   },
   { timestamps: true, versionKey: false },
 );
+
+contactSchema.post('save', handleMongooseError);
 
 export const ContactCollection = model('contact', contactSchema);
