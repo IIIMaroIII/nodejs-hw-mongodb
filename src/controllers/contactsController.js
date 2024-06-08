@@ -6,7 +6,12 @@ import { validateMongooseId } from '../utils/validateMongooseId.js';
 import { handleIdWasntFound } from '../utils/handleIdWasntFound.js';
 
 const homeController = (req, res) => {
-  res.json(ResponseMaker(200, 'Hello, this is my first backend`s answer!'));
+  res.json(
+    ResponseMaker(
+      200,
+      'Hey, what`s been up? This is my first backend`s answer!',
+    ),
+  );
 };
 
 const getAllContactsController = async (req, res) => {
