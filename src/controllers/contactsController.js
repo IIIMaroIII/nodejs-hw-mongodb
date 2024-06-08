@@ -58,13 +58,13 @@ const deleteContactController = async (req, res, next) => {
   validateMongooseId(contactId, next);
 
   const result = await contactsServices.deleteContact(contactId);
+  console.log('_________result', result);
 
-  if (!handleIdWasntFound(result, contactId, next)) {
-    return;
+  if (!result) {
+    return next(HttpError(404, `The contact with ${contactId} was not found!`));
   }
-  res.json(
-    ResponseMaker(200, 'Contact has been successfully deleted!', result),
-  );
+
+  res.json(ResponseMaker(204, 'Contact has been successfully deleted!'));
 };
 
 export const ctrl = {
