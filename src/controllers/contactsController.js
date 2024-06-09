@@ -2,8 +2,9 @@ import mongoose from 'mongoose';
 import { HttpError } from '../utils/HttpError.js';
 import { contactsServices } from '../services/contactsServices.js';
 import { ResponseMaker } from '../utils/responseMaker.js';
-import { validateMongooseId } from '../utils/validateMongooseId.js';
+
 import { handleIdWasntFound } from '../utils/handleIdWasntFound.js';
+import { validateMongoId } from '../middlewares/validateMongoId.js';
 
 const homeController = (req, res) => {
   res.json(
@@ -22,9 +23,6 @@ const getAllContactsController = async (req, res) => {
 const getContactByIdController = async (req, res, next) => {
   const { contactId } = req.params;
 
-  if (!mongoose.Types.ObjectId.isValid(contactId)) {
-    return next(HttpError(404, `The ${contactId} has not validated!`));
-  }
   const result = await contactsServices.getContactById(contactId);
 
   if (!result) {
@@ -48,8 +46,6 @@ const updateContactController = async (req, res, next) => {
   const { body } = req;
   const { contactId } = req.params;
 
-  validateMongooseId(contactId, next);
-
   const result = await contactsServices.updateContact(contactId, body);
 
   handleIdWasntFound(result, contactId, next);
@@ -59,8 +55,6 @@ const updateContactController = async (req, res, next) => {
 
 const deleteContactController = async (req, res, next) => {
   const { contactId } = req.params;
-
-  validateMongooseId(contactId, next);
 
   const result = await contactsServices.deleteContact(contactId);
 
