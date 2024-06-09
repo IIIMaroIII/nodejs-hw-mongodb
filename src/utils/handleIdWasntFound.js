@@ -4,5 +4,5 @@ export const handleIdWasntFound = (result, id, next) => {
   if (!result) {
     return next(HttpError(404, `The contact with ${id} was not found!`));
   }
-  return;
+  return next();
 };
