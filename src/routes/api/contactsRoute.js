@@ -1,8 +1,11 @@
 import express from 'express';
 import { ctrl } from '../../controllers/contactsController.js';
 import { ctrlWrapper } from '../../utils/ctrlWrapper.js';
+import { validateMongoId } from '../../middlewares/validateMongoId.js';
 
 export const contactsRouter = express.Router();
+
+contactsRouter.use('/contacts/:contactId', validateMongoId('contactId'));
 
 contactsRouter.get('/', ctrlWrapper(ctrl.homeController));
 
