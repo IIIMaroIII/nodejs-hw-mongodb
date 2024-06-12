@@ -26,6 +26,7 @@ contactsRouter.post(
 
 contactsRouter.patch(
   '/contacts/:contactId',
+  validateBody(contactsSchemas.patchContactSchema),
   ctrlWrapper(ctrl.updateContactController),
 );
 
