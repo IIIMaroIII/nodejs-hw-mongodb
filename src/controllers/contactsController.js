@@ -1,10 +1,9 @@
-import mongoose from 'mongoose';
 import { HttpError } from '../utils/HttpError.js';
 import { contactsServices } from '../services/contactsServices.js';
 import { ResponseMaker } from '../utils/responseMaker.js';
-
-import { handleIdWasntFound } from '../utils/handleIdWasntFound.js';
-import { validateMongoId } from '../middlewares/validateMongoId.js';
+import { parsePaginationParams } from '../utils/parsePaginationParams.js';
+import { parseSortParams } from '../utils/parseSortParams.js';
+import { parseFilterParams } from '../utils/parseFilterParams.js';
 
 const homeController = (req, res) => {
   res.json(
@@ -16,7 +15,18 @@ const homeController = (req, res) => {
 };
 
 const getAllContactsController = async (req, res) => {
-  const result = await contactsServices.getAllContacts();
+  const { page, perPage } = parsePaginationParams(req.query);
+  const { sortBy, sortOrder } = parseSortParams(req.query);
+  const filter = parseFilterParams(req.query);
+  console.log('filter', filter);
+
+  const result = await contactsServices.getAllContacts({
+    page,
+    perPage,
+    sortOrder,
+    sortBy,
+    filter,
+  });
   res.json(ResponseMaker(200, 'Successfully found contacts!', result));
 };
 
@@ -48,7 +58,9 @@ const updateContactController = async (req, res, next) => {
 
   const result = await contactsServices.updateContact(contactId, body);
 
-  handleIdWasntFound(result, contactId, next);
+  if (!result) {
+    return next(HttpError(404, `The contact with ${contactId} was not found!`));
+  }
 
   res.json(ResponseMaker(200, 'Successfully patched a contact!', result));
 };

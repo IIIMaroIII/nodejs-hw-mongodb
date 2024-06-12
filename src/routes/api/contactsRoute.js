@@ -2,6 +2,8 @@ import express from 'express';
 import { ctrl } from '../../controllers/contactsController.js';
 import { ctrlWrapper } from '../../utils/ctrlWrapper.js';
 import { validateMongoId } from '../../middlewares/validateMongoId.js';
+import { validateBody } from '../../middlewares/validateBody.js';
+import { contactsSchemas } from '../../validation/contactsSchemas.js';
 
 export const contactsRouter = express.Router();
 
@@ -16,10 +18,15 @@ contactsRouter.get(
   ctrlWrapper(ctrl.getContactByIdController),
 );
 
-contactsRouter.post('/contacts', ctrlWrapper(ctrl.addNewContactController));
+contactsRouter.post(
+  '/contacts',
+  validateBody(contactsSchemas.addNewContactSchema),
+  ctrlWrapper(ctrl.addNewContactController),
+);
 
 contactsRouter.patch(
   '/contacts/:contactId',
+  validateBody(contactsSchemas.patchContactSchema),
   ctrlWrapper(ctrl.updateContactController),
 );
 
