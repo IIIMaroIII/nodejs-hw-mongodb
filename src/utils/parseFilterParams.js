@@ -13,6 +13,7 @@ const parseIsFavorite = (favoriteQuery) => {
   const isString = typeof favoriteQuery === 'string';
   if (!isString) return;
   const isFavoriteKnown = favoriteQuery === 'false' || favoriteQuery === 'true';
+  // const isFavoriteKnown = typeof favoriteQuery === 'boolean';
   if (isFavoriteKnown) return favoriteQuery;
 };
 
