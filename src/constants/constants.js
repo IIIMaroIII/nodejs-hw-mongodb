@@ -24,3 +24,13 @@ export const CONTACT_TYPE = {
   HOME: 'home',
   PERSONAL: 'personal',
 };
+
+export const TIME_DURATION = {
+  FIFTEEN_MIN: 15 * 60 * 1000,
+  THIRTY_DAYS: 30 * 24 * 60 * 60 * 1000,
+};
+
+export const TOKEN_LIFETIME = {
+  ACCESS_TOKEN_VALID_UNTIL: Date.now() + TIME_DURATION.FIFTEEN_MIN,
+  REFRESH_TOKEN_VALID_UNTIL: Date.now() + TIME_DURATION.THIRTY_DAYS,
+};

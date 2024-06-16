@@ -1,16 +1,6 @@
 import joi from 'joi';
 
-//  {
-//     "name": "Yulia Shevchenko",
-//     "phoneNumber": "+380000000001",
-//     "email": "oleh1@example.com",
-//     "isFavourite": false,
-//     "contactType": "personal",
-//     "createdAt": "2024-05-08T16:12:14.954151",
-//     "updatedAt": "2024-05-08T16:12:14.954158"
-//   },
-
-const addNewContactSchema = joi.object({
+const newContactSchema = joi.object({
   name: joi.string().min(3).max(20).required().messages({
     'string.base': '"name" should be a type of text',
     'string.empty': '"name" cannot be an empty field',
@@ -41,7 +31,7 @@ const addNewContactSchema = joi.object({
   }),
 });
 
-const patchContactSchema = joi.object({
+const patchSchema = joi.object({
   name: joi.string().min(3).max(20).messages({
     'string.base': '"name" should be a type of text',
     'string.empty': '"name" cannot be an empty field',
@@ -70,7 +60,46 @@ const patchContactSchema = joi.object({
   }),
 });
 
-export const contactsSchemas = {
-  addNewContactSchema,
-  patchContactSchema,
+const registerUserSchema = joi.object({
+  name: joi.string().required().messages({
+    'any.required': 'Name is required!',
+  }),
+  email: joi
+    .string()
+    .trim()
+    .lowercase()
+    .email()
+    .pattern(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/)
+    .required()
+    .messages({
+      'string.email':
+        'Please fill a valid email address in lowercase. Examples of valid email addresses: john.doe@example.com, john-doe@example.com, john@example.co.uk,john.doe@example.co.in',
+      'any.required': 'Email address is required',
+    }),
+  password: joi.string().required().messages({
+    'any.required': 'Password is required!',
+  }),
+});
+
+const loginUserSchema = joi.object({
+  email: joi
+    .string()
+    .trim()
+    .lowercase()
+    .email()
+    .pattern(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/)
+    .required()
+    .messages({
+      'string.email':
+        'Please fill a valid email address in lowercase. Examples of valid email addresses: john.doe@example.com, john-doe@example.com, john@example.co.uk,john.doe@example.co.in',
+      'any.required': 'Email address is required',
+    }),
+  password: joi.string().required().messages({
+    'any.required': 'Password is required!',
+  }),
+});
+
+export const JoiSchemas = {
+  contacts: { newContactSchema, patchSchema },
+  auth: { registerUserSchema, loginUserSchema },
 };

@@ -1,5 +1,5 @@
 import { HttpError } from '../utils/HttpError.js';
-import { contactsServices } from '../services/contactsServices.js';
+import { Services } from '../services/Services.js';
 import { ResponseMaker } from '../utils/responseMaker.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
@@ -20,7 +20,7 @@ const getAllContactsController = async (req, res) => {
   const filter = parseFilterParams(req.query);
   console.log('filter', filter);
 
-  const result = await contactsServices.getAllContacts({
+  const result = await Services.getAllContacts({
     page,
     perPage,
     sortOrder,
@@ -33,7 +33,7 @@ const getAllContactsController = async (req, res) => {
 const getContactByIdController = async (req, res, next) => {
   const { contactId } = req.params;
 
-  const result = await contactsServices.getContactById(contactId);
+  const result = await Services.getContactById(contactId);
 
   if (!result) {
     return next(HttpError(404, `The contact with ${contactId} was not found!`));
@@ -47,8 +47,9 @@ const getContactByIdController = async (req, res, next) => {
   );
 };
 
-const addNewContactController = async (req, res) => {
-  const result = await contactsServices.addNewContact(req.body);
+const addNewContactController = async (req, res, next) => {
+  const result = await Services.addNewContact(req.body);
+  if (!result) return next(HttpError(500, 'Something went wrong!'));
   res.json(ResponseMaker(201, 'Successfully created a contact!', result));
 };
 
@@ -56,7 +57,7 @@ const updateContactController = async (req, res, next) => {
   const { body } = req;
   const { contactId } = req.params;
 
-  const result = await contactsServices.updateContact(contactId, body);
+  const result = await Services.updateContact(contactId, body);
 
   if (!result) {
     return next(HttpError(404, `The contact with ${contactId} was not found!`));
@@ -68,7 +69,7 @@ const updateContactController = async (req, res, next) => {
 const deleteContactController = async (req, res, next) => {
   const { contactId } = req.params;
 
-  const result = await contactsServices.deleteContact(contactId);
+  const result = await Services.deleteContact(contactId);
 
   if (!result) {
     return next(HttpError(404, `The contact with ${contactId} was not found!`));
@@ -77,11 +78,28 @@ const deleteContactController = async (req, res, next) => {
   res.json(ResponseMaker(204, 'Contact has been successfully deleted!'));
 };
 
-export const ctrl = {
+const authRegisterController = async (req, res, next) => {
+  const user = await Services.registerUser(req.body);
+  if (!user) return next(HttpError(500, 'Something went wrong!'));
+  res.json(ResponseMaker(201, 'Successfully registered a user!', user));
+};
+
+const authLoginController = async (req, res, next) => {
+  const user = await Services.loginUser(req.body);
+  if (!user) return next(HttpError(500, 'Something went wrong!'));
+  res.json(ResponseMaker(200, 'You`ve been successfully logged in!', user));
+};
+
+const authLogoutController = async (req, res, next) => {};
+
+export const Controllers = {
   homeController,
   getAllContactsController,
   getContactByIdController,
   addNewContactController,
   updateContactController,
   deleteContactController,
+  authRegisterController,
+  authLoginController,
+  authLogoutController,
 };
