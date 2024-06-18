@@ -6,6 +6,7 @@ import { ENV_VARS } from './constants/constants.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { Routers } from './routes/api/Routers.js';
+import cookieParser from 'cookie-parser';
 
 export const setupServer = () => {
   const app = express();
@@ -17,6 +18,7 @@ export const setupServer = () => {
 
   app.use(logger());
   app.use(cors());
+  app.use(cookieParser());
   app.use(express.json());
 
   app.use(Routers.contactsRouter);

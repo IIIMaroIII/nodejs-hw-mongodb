@@ -5,10 +5,12 @@ import { validateMongoId } from '../../middlewares/validateMongoId.js';
 import { validateBody } from '../../middlewares/validateBody.js';
 import { Controllers } from '../../controllers/Controllers.js';
 import { JoiSchemas } from '../../validation/JoiSchemas.js';
+import { authenticate } from '../../middlewares/authenticate.js';
 
 const contactsRouter = express.Router();
 
 contactsRouter.use('/contacts/:contactId', validateMongoId('contactId'));
+contactsRouter.use('/contacts', authenticate);
 
 contactsRouter.get('/', ctrlWrapper(Controllers.homeController));
 
@@ -52,6 +54,13 @@ authRouter.post(
   validateBody(JoiSchemas.auth.loginUserSchema),
   ctrlWrapper(Controllers.authLoginController),
 );
+
+authRouter.post(
+  '/auth/refresh',
+  ctrlWrapper(Controllers.authRefreshController),
+);
+
+authRouter.post('/auth/logout', ctrlWrapper(Controllers.authLogoutController));
 
 export const Routers = {
   contactsRouter,

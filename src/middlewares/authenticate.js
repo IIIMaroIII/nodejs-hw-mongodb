@@ -1,5 +1,6 @@
 import { AUTHENTICATE } from '../constants/constants.js';
 import { Models } from '../db/models/Models.js';
+import { Services } from '../services/Services.js';
 import { HttpError } from '../utils/HttpError.js';
 
 export const authenticate = async (req, res, next) => {
@@ -23,6 +24,10 @@ export const authenticate = async (req, res, next) => {
   const isAccessTokenExpired =
     new Date() > new Date(session.accessTokenValidUntil);
   if (isAccessTokenExpired) {
+    // await Services.logoutUser({
+    //   sessionId: req.cookies.sessionId,
+    //   refreshToken: req.cookies.refreshToken,
+    // });
     return next(HttpError(401, 'The access token has been expired!'));
   }
 

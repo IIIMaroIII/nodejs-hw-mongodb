@@ -8,6 +8,10 @@ const newContactSchema = joi.object({
     'string.max': '"name" should have a maximum length of {#limit}',
     'any.required': '"name" is a required field',
   }),
+  userId: joi.string().messages({
+    'string.base': '"UserId" should be a type of text',
+    'any.required': 'UserId is a required field',
+  }),
   phoneNumber: joi.string().min(3).max(20).required().messages({
     'string.base': '"phoneNumber" should be a type of text',
     'string.empty': '"phoneNumber" cannot be an empty field',
@@ -37,6 +41,10 @@ const patchSchema = joi.object({
     'string.empty': '"name" cannot be an empty field',
     'string.min': '"name" should have a minimum length of {#limit}',
     'string.max': '"name" should have a maximum length of {#limit}',
+  }),
+  userId: joi.string().messages({
+    'string.base': 'userId should be a type of text',
+    'any.required': 'userId is a required field',
   }),
   phoneNumber: joi.string().min(3).max(20).messages({
     'string.base': '"phoneNumber" should be a type of text',

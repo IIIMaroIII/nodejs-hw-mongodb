@@ -4,6 +4,8 @@ import { ResponseMaker } from '../utils/responseMaker.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
+import { COOKIE, TIME_DURATION } from '../constants/constants.js';
+import { GenerateCookie } from '../utils/GenerateCookie.js';
 
 const homeController = (req, res) => {
   res.json(
@@ -18,9 +20,9 @@ const getAllContactsController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
   const { sortBy, sortOrder } = parseSortParams(req.query);
   const filter = parseFilterParams(req.query);
-  console.log('filter', filter);
 
   const result = await Services.getAllContacts({
+    userId: req.user.id,
     page,
     perPage,
     sortOrder,
@@ -33,7 +35,10 @@ const getAllContactsController = async (req, res) => {
 const getContactByIdController = async (req, res, next) => {
   const { contactId } = req.params;
 
-  const result = await Services.getContactById(contactId);
+  const result = await Services.getContactById({
+    _id: contactId,
+    userId: req.user.id,
+  });
 
   if (!result) {
     return next(HttpError(404, `The contact with ${contactId} was not found!`));
@@ -48,7 +53,11 @@ const getContactByIdController = async (req, res, next) => {
 };
 
 const addNewContactController = async (req, res, next) => {
-  const result = await Services.addNewContact(req.body);
+  const result = await Services.addNewContact({
+    ...req.body,
+    userId: req.user.id,
+  });
+  console.log('result', result);
   if (!result) return next(HttpError(500, 'Something went wrong!'));
   res.json(ResponseMaker(201, 'Successfully created a contact!', result));
 };
@@ -56,8 +65,12 @@ const addNewContactController = async (req, res, next) => {
 const updateContactController = async (req, res, next) => {
   const { body } = req;
   const { contactId } = req.params;
+  const { id } = req.user;
 
-  const result = await Services.updateContact(contactId, body);
+  const result = await Services.updateContact(contactId, {
+    ...body,
+    userId: id,
+  });
 
   if (!result) {
     return next(HttpError(404, `The contact with ${contactId} was not found!`));
@@ -85,12 +98,46 @@ const authRegisterController = async (req, res, next) => {
 };
 
 const authLoginController = async (req, res, next) => {
-  const user = await Services.loginUser(req.body);
-  if (!user) return next(HttpError(500, 'Something went wrong!'));
-  res.json(ResponseMaker(200, 'You`ve been successfully logged in!', user));
+  const session = await Services.loginUser(req.body);
+  if (!session) return next(HttpError(500, 'Something went wrong!'));
+
+  GenerateCookie(session, res);
+
+  res.json(
+    ResponseMaker(200, 'You`ve been successfully logged in!', {
+      accessToken: session.accessToken,
+    }),
+  );
 };
 
-const authLogoutController = async (req, res, next) => {};
+const authRefreshController = async (req, res, next) => {
+  console.log('req.cookies', req.cookies);
+  const session = await Services.refreshUsersSession({
+    sessionId: req.cookies.sessionId,
+    refreshToken: req.cookies.refreshToken,
+  });
+  if (!session) return next(HttpError(500, 'Something went wrong!'));
+
+  GenerateCookie(session, res);
+
+  res.json(
+    ResponseMaker(200, 'The session has been successfully refreshed!', {
+      accessToken: session.accessToken,
+    }),
+  );
+};
+
+const authLogoutController = async (req, res, next) => {
+  if (!req.cookies.sessionId || !req.cookies.refreshToken)
+    throw next(HttpError(500, 'Something went wrong!'));
+  await Services.logoutUser({
+    sessionId: req.cookies.sessionId,
+    refreshToken: req.cookies.refreshToken,
+  });
+  res.clearCookie(COOKIE.SESSION_ID);
+  res.clearCookie(COOKIE.REFRESH_TOKEN);
+  res.json(ResponseMaker(204, 'You`ve been successfully logged out!'));
+};
 
 export const Controllers = {
   homeController,
@@ -101,5 +148,6 @@ export const Controllers = {
   deleteContactController,
   authRegisterController,
   authLoginController,
+  authRefreshController,
   authLogoutController,
 };

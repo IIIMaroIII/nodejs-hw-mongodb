@@ -3,9 +3,10 @@ import { CONTACT, SORT_ORDER } from '../constants/constants.js';
 import { Models } from '../db/models/Models.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { HttpError } from '../utils/HttpError.js';
-import { NewSession } from '../utils/newSession.js';
+import { NewSession } from '../utils/NewSession.js';
 
 const getAllContacts = async ({
+  userId,
   page = 1,
   perPage = 3,
   sortOrder = SORT_ORDER.ASC,
@@ -14,7 +15,7 @@ const getAllContacts = async ({
 }) => {
   const skip = (page - 1) * perPage;
 
-  const contactsQuery = Models.ContactModel.find();
+  const contactsQuery = Models.ContactModel.find({ userId });
 
   if (filter.contactType) {
     return contactsQuery.where(CONTACT.CONTACT_TYPE).equals(filter.contactType);
@@ -23,7 +24,7 @@ const getAllContacts = async ({
     return contactsQuery.where(CONTACT.IS_FAVORITE).equals(filter.isFavorite);
   }
   const [contacts, contactsCount] = await Promise.all([
-    Models.ContactModel.find()
+    Models.ContactModel.find({ userId })
       .skip(skip)
       .limit(perPage)
       .merge(contactsQuery)
@@ -40,8 +41,8 @@ const getAllContacts = async ({
   };
 };
 
-const getContactById = async (id) =>
-  (await Models.ContactModel.findById(id)) || null;
+const getContactById = async (payload) =>
+  (await Models.ContactModel.findOne(payload)) || null;
 
 const addNewContact = async (payload) =>
   await Models.ContactModel.create(payload);
@@ -80,6 +81,30 @@ const loginUser = async (payload) => {
   return await Models.SessionModel.create(NewSession(user._id));
 };
 
+const refreshUsersSession = async ({ sessionId, refreshToken }) => {
+  const session = await Models.SessionModel.findOne({
+    _id: sessionId,
+    refreshToken,
+  });
+  if (!session) throw HttpError(401, 'The session was not found!');
+
+  const isTokenExpired = new Date() > session.refreshTokenValidUntil;
+  if (isTokenExpired) throw HttpError(401, 'The session token has expired!');
+
+  await Models.SessionModel.findOneAndDelete({
+    _id: sessionId,
+    refreshToken,
+  });
+  const newSession = NewSession(session.userId);
+
+  return await Models.SessionModel.create({ ...newSession });
+};
+
+const logoutUser = async ({ sessionId, refreshToken }) => {
+  if (!sessionId) throw HttpError(400, 'The session data was not provided!');
+  await Models.SessionModel.deleteOne({ _id: sessionId, refreshToken });
+};
+
 export const Services = {
   getAllContacts,
   getContactById,
@@ -88,4 +113,6 @@ export const Services = {
   deleteContact,
   registerUser,
   loginUser,
+  logoutUser,
+  refreshUsersSession,
 };

@@ -4,6 +4,7 @@ import { handleMongooseError } from '../../utils/handleMongooseError.js';
 const contactSchema = new Schema(
   {
     name: { type: String, required: [true, 'Name is required!'] },
+    userId: { type: String, required: [true, 'UserId is required!'] },
     phoneNumber: {
       type: String,
       required: [true, 'Phone number is required!'],
@@ -47,7 +48,7 @@ userSchema.methods.toJSON = function () {
 
 const sessionSchema = new Schema(
   {
-    userId: { type: Schema.Types.ObjectId, required: true },
+    userId: { type: String, required: true },
     accessToken: { type: String, required: true },
     refreshToken: { type: String, required: true },
     accessTokenValidUntil: { type: Date, required: true },
