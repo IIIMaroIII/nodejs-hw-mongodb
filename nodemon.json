@@ -1,5 +1,4 @@
 {
   "watch": ["src"],
-  "ext": "js,json",
-  "exec": "node --inspect=9230 ./src/index.js"
+  "ext": "js,json"
 }
