@@ -26,7 +26,7 @@ export const CONTACT_TYPE = {
 };
 
 export const TIME_DURATION = {
-  FIFTEEN_MIN: 7 * 60 * 60 * 1000,
+  FIFTEEN_MIN: 15 * 60 * 1000,
   THIRTY_DAYS: 30 * 24 * 60 * 60 * 1000,
 };
 
