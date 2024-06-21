@@ -57,18 +57,17 @@ export const addNewContactController = async (req, res, next) => {
   });
   console.log('result', result);
   if (!result) return next(HttpError(500, 'Something went wrong!'));
-  res.json(ResponseMaker(201, 'Successfully created a contact!', result));
+  res
+    .status(201)
+    .json(ResponseMaker(201, 'Successfully created a contact!', result));
 };
 
 export const updateContactController = async (req, res, next) => {
   const { body } = req;
   const { contactId } = req.params;
-  const { id } = req.user;
+  const { id: userId } = req.user;
 
-  const result = await Services.updateContact(contactId, {
-    ...body,
-    userId: id,
-  });
+  const result = await Services.updateContact({ contactId, userId }, body);
 
   if (!result) {
     return next(HttpError(404, `The contact with ${contactId} was not found!`));
@@ -80,11 +79,14 @@ export const updateContactController = async (req, res, next) => {
 export const deleteContactController = async (req, res, next) => {
   const { contactId } = req.params;
 
-  const result = await Services.deleteContact(contactId);
+  const result = await Services.deleteContact({
+    _id: contactId,
+    userId: req.user.id,
+  });
 
   if (!result) {
     return next(HttpError(404, `The contact with ${contactId} was not found!`));
   }
 
-  res.json(ResponseMaker(204, 'Contact has been successfully deleted!'));
+  res.status(204).send();
 };
