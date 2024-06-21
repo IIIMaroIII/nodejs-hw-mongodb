@@ -10,6 +10,7 @@ export const SORT_ORDER = {
   ASC: 'asc',
   DESC: 'desc',
 };
+
 export const CONTACT = {
   ID: '_id',
   NAME: 'name',
@@ -20,6 +21,7 @@ export const CONTACT = {
   CREATED_AT: 'createdAt',
   UPDATED_AT: 'updatedAt',
 };
+
 export const CONTACT_TYPE = {
   HOME: 'home',
   PERSONAL: 'personal',

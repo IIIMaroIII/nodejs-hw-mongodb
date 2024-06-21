@@ -54,5 +54,5 @@ export const authLogoutController = async (req, res, next) => {
   });
   res.clearCookie(COOKIE.SESSION_ID);
   res.clearCookie(COOKIE.REFRESH_TOKEN);
-  res.json(ResponseMaker(204, 'You`ve been successfully logged out!'));
+  res.status(204).send();
 };

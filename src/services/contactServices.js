@@ -44,11 +44,19 @@ export const getContactById = async (payload) =>
 export const addNewContact = async (payload) =>
   await Models.ContactModel.create(payload);
 
-export const updateContact = async (id, payload, options = {}) =>
-  await Models.ContactModel.findByIdAndUpdate(id, payload, {
-    new: true,
-    ...options,
-  });
+export const updateContact = async (
+  { contactId, userId },
+  payload,
+  options = {},
+) =>
+  await Models.ContactModel.findOneAndUpdate(
+    { _id: contactId, userId },
+    payload,
+    {
+      new: true,
+      ...options,
+    },
+  );
 
 export const deleteContact = async (id) =>
-  await Models.ContactModel.findByIdAndDelete(id);
+  await Models.ContactModel.findOneAndDelete(id);
