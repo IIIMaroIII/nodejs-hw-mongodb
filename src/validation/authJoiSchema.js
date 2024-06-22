@@ -39,7 +39,23 @@ const loginUserSchema = joi.object({
   }),
 });
 
+export const requestResetPasswordSchema = joi.object({
+  email: joi
+    .string()
+    .trim()
+    .lowercase()
+    .email()
+    .pattern(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/)
+    .required()
+    .messages({
+      'string.email':
+        'Please fill a valid email address in lowercase. Examples of valid email addresses: john.doe@example.com, john-doe@example.com, john@example.co.uk,john.doe@example.co.in',
+      'any.required': 'Email address is required',
+    }),
+});
+
 export const auth = {
   registerUserSchema,
   loginUserSchema,
+  requestResetPasswordSchema,
 };

@@ -56,3 +56,10 @@ export const authLogoutController = async (req, res, next) => {
   res.clearCookie(COOKIE.REFRESH_TOKEN);
   res.status(204).send();
 };
+
+export const authRequestResetPasswordController = async (req, res, next) => {
+  await Services.requestResetPassword(req.body.email);
+  res.json(
+    ResponseMaker(200, 'The reset password email has been successfully sent!'),
+  );
+};

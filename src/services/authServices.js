@@ -1,7 +1,11 @@
+import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { Models } from '../db/models/index.js';
 import { HttpError } from '../utils/HttpError.js';
 import { NewSession } from '../utils/NewSession.js';
+import { env } from '../utils/env.js';
+import { JWT, SMTP } from '../constants/constants.js';
+import { sendEmail } from '../utils/sendMail.js';
 
 export const registerUser = async (payload) => {
   const userExists = await Models.UserModel.findOne({ email: payload.email });
@@ -50,4 +54,18 @@ export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
 export const logoutUser = async ({ sessionId, refreshToken }) => {
   if (!sessionId) throw HttpError(400, 'The session data was not provided!');
   await Models.SessionModel.deleteOne({ _id: sessionId, refreshToken });
+};
+export const requestResetPassword = async (email) => {
+  const user = await Models.UserModel.findOne({ email });
+  if (!user) throw HttpError(404, 'The user hasn`t found!');
+
+  const resetToken = jwt.sign({ sub: user.id, email }, env(JWT.SECRET), {
+    expiresIn: '15m',
+  });
+  await sendEmail({
+    from: env(SMTP.FROM),
+    to: email,
+    subject: 'Reset your password',
+    html: `<p>Click <a href="${resetToken}">here</a> to reset your password!</p>`,
+  });
 };

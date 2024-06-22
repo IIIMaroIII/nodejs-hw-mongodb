@@ -21,3 +21,9 @@ authRouter.post(
 authRouter.post('/refresh', ctrlWrapper(Controllers.authRefreshController));
 
 authRouter.post('/logout', ctrlWrapper(Controllers.authLogoutController));
+
+authRouter.post(
+  '/request-reset-password',
+  validateBody(JoiSchemas.auth.requestResetPasswordSchema),
+  ctrlWrapper(Controllers.authRequestResetPasswordController),
+);
