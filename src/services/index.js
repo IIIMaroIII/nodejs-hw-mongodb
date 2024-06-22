@@ -3,6 +3,7 @@ import {
   logoutUser,
   refreshUsersSession,
   registerUser,
+  requestResetPassword,
 } from './authServices.js';
 import {
   addNewContact,
@@ -22,4 +23,5 @@ export const Services = {
   loginUser,
   logoutUser,
   refreshUsersSession,
+  requestResetPassword,
 };

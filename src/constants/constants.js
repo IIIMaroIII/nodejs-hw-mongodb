@@ -42,10 +42,15 @@ export const AUTHENTICATE = {
   AUTHORIZATION: 'Authorization',
   BEARER: 'Bearer',
 };
+
 export const SMTP = {
-  SMTP_HOST: 'SMTP_HOST',
-  SMTP_PORT: 'SMTP_PORT',
-  SMTP_USER: 'SMTP_USER',
-  SMTP_PASSWORD: 'SMTP_PASSWORD',
-  SMTP_FROM: 'SMTP_FROM',
+  HOST: 'SMTP_HOST',
+  PORT: 'SMTP_PORT',
+  USER: 'SMTP_USER',
+  PASSWORD: 'SMTP_PASSWORD',
+  FROM: 'SMTP_FROM',
 };
+
+export const JWT = {
+  SECRET: 'JWT_SECRET',
+
