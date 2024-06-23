@@ -4,6 +4,7 @@ import {
   authRefreshController,
   authRegisterController,
   authRequestResetPasswordController,
+  authResetPwdController,
 } from './authController.js';
 import {
   addNewContactController,
@@ -26,4 +27,5 @@ export const Controllers = {
   authRefreshController,
   authLogoutController,
   authRequestResetPasswordController,
+  authResetPwdController,
 };

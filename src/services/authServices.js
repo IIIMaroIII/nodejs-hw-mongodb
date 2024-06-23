@@ -4,7 +4,7 @@ import { Models } from '../db/models/index.js';
 import { HttpError } from '../utils/HttpError.js';
 import { NewSession } from '../utils/NewSession.js';
 import { env } from '../utils/env.js';
-import { JWT, SMTP } from '../constants/constants.js';
+import { ENV_VARS, JWT, SMTP } from '../constants/constants.js';
 import { sendEmail } from '../utils/sendMail.js';
 
 export const registerUser = async (payload) => {
@@ -57,15 +57,49 @@ export const logoutUser = async ({ sessionId, refreshToken }) => {
 };
 export const requestResetPassword = async (email) => {
   const user = await Models.UserModel.findOne({ email });
-  if (!user) throw HttpError(404, 'The user hasn`t found!');
+  if (!user) throw HttpError(404, 'The user hasn`t been found!');
 
   const resetToken = jwt.sign({ sub: user.id, email }, env(JWT.SECRET), {
-    expiresIn: '15m',
+    expiresIn: '5m',
   });
-  await sendEmail({
-    from: env(SMTP.FROM),
-    to: email,
-    subject: 'Reset your password',
-    html: `<p>Click <a href="${resetToken}">here</a> to reset your password!</p>`,
-  });
+
+  try {
+    await sendEmail({
+      from: env(SMTP.FROM),
+      to: email,
+      subject: 'Reset your password',
+      html: `<p>Click <a href="${env(
+        ENV_VARS.APP_DOMAIN,
+      )}/reset-password?token=${resetToken}">here</a> to reset your password!</p>`,
+    });
+  } catch (error) {
+    console.log(error);
+    throw HttpError(500, 'Failed to send the email, please try again later');
+  }
+};
+
+export const resetPwd = async (payload) => {
+  let entries;
+  try {
+    entries = jwt.verify(payload.token, env(JWT.SECRET));
+
+    const user = await Models.UserModel.findOne({
+      email: entries.email,
+      _id: entries.sub,
+    });
+    if (!user) throw HttpError(404, 'The user hasn`t been found!');
+
+    const encryptedPassword = await bcrypt.hash(payload.password, 10);
+
+    await Models.UserModel.updateOne(
+      { _id: user.id },
+      { password: encryptedPassword },
+    );
+
+    await Models.SessionModel.deleteOne({ userId: user.id });
+  } catch (error) {
+    if (error instanceof Error)
+      throw HttpError(401, 'The token is expired or invalid');
+    throw error;
+  }
 };
