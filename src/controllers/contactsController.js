@@ -7,10 +7,7 @@ import { ResponseMaker } from '../utils/responseMaker.js';
 
 export const homeController = (req, res) => {
   res.json(
-    ResponseMaker(
-      200,
-      'Hey, what`s been up? This is my first backend`s answer!',
-    ),
+    ResponseMaker(200, 'Hey, what`s been up? This is my first backend`s!'),
   );
 };
 
