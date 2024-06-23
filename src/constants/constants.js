@@ -54,4 +54,4 @@ export const SMTP = {
 
 export const JWT = {
   SECRET: 'JWT_SECRET',
-};
+
