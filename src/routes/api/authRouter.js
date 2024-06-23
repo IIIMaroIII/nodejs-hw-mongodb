@@ -27,3 +27,9 @@ authRouter.post(
   validateBody(JoiSchemas.auth.requestResetPasswordSchema),
   ctrlWrapper(Controllers.authRequestResetPasswordController),
 );
+
+authRouter.post(
+  '/reset-pwd',
+  validateBody(JoiSchemas.auth.resetPwdSchema),
+  ctrlWrapper(Controllers.authResetPwdController),
+);

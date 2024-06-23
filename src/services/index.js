@@ -4,6 +4,7 @@ import {
   refreshUsersSession,
   registerUser,
   requestResetPassword,
+  resetPwd,
 } from './authServices.js';
 import {
   addNewContact,
@@ -24,4 +25,5 @@ export const Services = {
   logoutUser,
   refreshUsersSession,
   requestResetPassword,
+  resetPwd,
 };

@@ -60,6 +60,15 @@ export const authLogoutController = async (req, res, next) => {
 export const authRequestResetPasswordController = async (req, res, next) => {
   await Services.requestResetPassword(req.body.email);
   res.json(
-    ResponseMaker(200, 'The reset password email has been successfully sent!'),
+    ResponseMaker(
+      200,
+      'The reset password email has been successfully sent!',
+      {},
+    ),
   );
+};
+
+export const authResetPwdController = async (req, res, next) => {
+  await Services.resetPwd(req.body);
+  res.json(ResponseMaker(200, 'The password has been successfully reset!', {}));
 };

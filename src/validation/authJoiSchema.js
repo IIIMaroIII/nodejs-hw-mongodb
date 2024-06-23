@@ -54,8 +54,18 @@ export const requestResetPasswordSchema = joi.object({
     }),
 });
 
+export const resetPwdSchema = joi.object({
+  token: joi.string().required().messages({
+    'any.required': 'Token is required!',
+  }),
+  password: joi.string().required().messages({
+    'any.required': 'Password is required!',
+  }),
+});
+
 export const auth = {
   registerUserSchema,
   loginUserSchema,
   requestResetPasswordSchema,
+  resetPwdSchema,
 };
