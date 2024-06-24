@@ -4,6 +4,7 @@ import { parseFilterParams } from '../utils/parseFilterParams.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { ResponseMaker } from '../utils/responseMaker.js';
+import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 
 export const homeController = (req, res) => {
   res.json(
@@ -48,11 +49,20 @@ export const getContactByIdController = async (req, res, next) => {
 };
 
 export const addNewContactController = async (req, res, next) => {
+  const photo = req.file;
+
+  let photoUrl;
+
+  if (photo) {
+    photoUrl = await saveFileToUploadDir(photo);
+  }
+
   const result = await Services.addNewContact({
     ...req.body,
     userId: req.user.id,
+    photo: photoUrl,
   });
-  console.log('result', result);
+
   if (!result) return next(HttpError(500, 'Something went wrong!'));
   res
     .status(201)
@@ -63,8 +73,18 @@ export const updateContactController = async (req, res, next) => {
   const { body } = req;
   const { contactId } = req.params;
   const { id: userId } = req.user;
+  const photo = req.file;
 
-  const result = await Services.updateContact({ contactId, userId }, body);
+  let photoUrl;
+
+  if (photo) {
+    photoUrl = await saveFileToUploadDir(photo);
+  }
+
+  const result = await Services.updateContact(
+    { contactId, userId },
+    { ...body, photo: photoUrl },
+  );
 
   if (!result) {
     return next(HttpError(404, `The contact with ${contactId} was not found!`));

@@ -33,6 +33,7 @@ const newContactSchema = joi.object({
     'string.base': '"email" should be a type of text',
     'any.only': '"contactType" must be one of [personal, home]',
   }),
+  photo: joi.string(),
 });
 
 const patchSchema = joi.object({
@@ -66,6 +67,7 @@ const patchSchema = joi.object({
     'string.base': '"email" should be a type of text',
     'any.only': '"contactType" must be one of [personal, home]',
   }),
+  photo: joi.string(),
 });
 
 export const contacts = { newContactSchema, patchSchema };
