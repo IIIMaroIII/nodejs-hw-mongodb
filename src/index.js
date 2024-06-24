@@ -4,8 +4,12 @@ import { setupServer } from './server.js';
 import { createDirIfDoesntExist } from './utils/createDirIfDoesntExist.js';
 
 (async () => {
-  await initMongoConnection();
-  await createDirIfDoesntExist(DIR.TEMP);
-  await createDirIfDoesntExist(DIR.UPLOAD);
-  setupServer();
+  try {
+    await initMongoConnection();
+    await createDirIfDoesntExist(DIR.TEMP);
+    await createDirIfDoesntExist(DIR.UPLOAD);
+    setupServer();
+  } catch (error) {
+    console.log(error);
+  }
 })();
