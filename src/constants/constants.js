@@ -1,3 +1,5 @@
+import path from 'path';
+
 export const ENV_VARS = {
   PORT: 'PORT',
   MONGODB_USER: 'MONGODB_USER',
@@ -5,6 +7,11 @@ export const ENV_VARS = {
   MONGODB_URL: 'MONGODB_URL',
   MONGODB_DB: 'MONGODB_DB',
   APP_DOMAIN: 'APP_DOMAIN',
+};
+
+export const DIR = {
+  TEMP: path.join(process.cwd(), 'temp'),
+  UPLOAD: path.join(process.cwd(), 'uploads'),
 };
 
 export const SORT_ORDER = {
@@ -54,4 +61,12 @@ export const SMTP = {
 
 export const JWT = {
   SECRET: 'JWT_SECRET',
+};
+
+export const CLOUDINARY = {
+  URL: 'CLOUDINARY_URL',
+  API_KEY: 'CLOUDINARY_API_KEY',
+  API_SECRET: 'CLOUDINARY_API_SECRET',
+  NAME: 'CLOUDINARY_NAME',
+  ENABLE_CLOUDINARY: 'ENABLE_CLOUDINARY',
 };
