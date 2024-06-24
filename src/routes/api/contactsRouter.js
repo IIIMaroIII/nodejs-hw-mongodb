@@ -21,15 +21,15 @@ contactsRouter.get(
 
 contactsRouter.post(
   '',
-  validateBody(JoiSchemas.contacts.newContactSchema),
   upload.single('photo'),
+  validateBody(JoiSchemas.contacts.newContactSchema),
   ctrlWrapper(Controllers.addNewContactController),
 );
 
 contactsRouter.patch(
   '/:contactId',
-  validateBody(JoiSchemas.contacts.patchSchema),
   upload.single('photo'),
+  validateBody(JoiSchemas.contacts.patchSchema),
   ctrlWrapper(Controllers.updateContactController),
 );
 
