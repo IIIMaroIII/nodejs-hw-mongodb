@@ -1,0 +1,15 @@
+apis:
+  sample@v1:
+    root: './docs/openapi.yaml'
+extends:
+  - recommended
+rules:
+  no-unused-components: error
+theme:
+  colors:
+    primary:
+      main: '#32329f'
+  languages:
+    - lang: curl
+    - lang: Node.js
+    - lang: JavaScript
