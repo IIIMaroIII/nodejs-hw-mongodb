@@ -44,7 +44,7 @@ export const getContactByIdController = async (req, res, next) => {
   res.json(
     ResponseMaker(
       200,
-      `Successfully found contact with ${contactId}}!`,
+      `Successfully found contact with id ${contactId}!`,
       result,
     ),
   );
