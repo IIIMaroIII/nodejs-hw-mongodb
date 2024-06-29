@@ -4,12 +4,6 @@ required:
   - name
   - userId
   - phoneNumber
-  - email
-  - isFavourite
-  - contactType
-  - photo
-  - createdAt
-  - updatedAt
 properties:
   _id:
     description: 'Contact`s id'
@@ -31,15 +25,14 @@ properties:
     description: 'Contact`s email'
     type: string
     example: 'ivan_durak@example.com'
-  isFavourite:
+  isFavorite:
     description: 'Is contact favorite'
     type: boolean
-    default: false
     example: true
   contactType:
     description: 'Contact`s type'
     type: string
-    enum: ['work', 'home', 'personal']
+    enum: ['home', 'personal']
     example: 'work'
   photo:
     description: 'Contact`s photograph link'
