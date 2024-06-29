@@ -13,7 +13,7 @@ const contactSchema = new Schema(
     isFavourite: { type: Boolean, default: false },
     contactType: {
       type: String,
-      enum: ['work', 'home', 'personal'],
+      enum: ['home', 'personal'],
     },
     photo: { type: String },
   },

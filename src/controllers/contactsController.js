@@ -25,9 +25,11 @@ export const getAllContactsController = async (req, res) => {
     perPage,
     sortOrder,
     sortBy,
-    filter,
+    filterObj: filter,
   });
-  res.json(ResponseMaker(200, 'Successfully found contacts!', result));
+  res.json(
+    ResponseMaker(200, 'The contacts have been successfully found!', result),
+  );
 };
 
 export const getContactByIdController = async (req, res, next) => {

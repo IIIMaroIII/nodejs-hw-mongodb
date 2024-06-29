@@ -8,23 +8,41 @@ export const getAllContacts = async ({
   perPage = 3,
   sortOrder = SORT_ORDER.ASC,
   sortBy = '_id',
-  filter = {},
+  filterObj: filter = {},
 }) => {
   const skip = (page - 1) * perPage;
 
-  const contactsQuery = Models.ContactModel.find({ userId });
+  let contactsQuery = Models.ContactModel.find({ userId });
 
   if (filter.contactType) {
-    return contactsQuery.where(CONTACT.CONTACT_TYPE).equals(filter.contactType);
+    contactsQuery = contactsQuery
+      .where(CONTACT.CONTACT_TYPE)
+      .equals(filter.contactType);
   }
   if (filter.isFavorite) {
-    return contactsQuery.where(CONTACT.IS_FAVORITE).equals(filter.isFavorite);
+    contactsQuery = contactsQuery
+      .where(CONTACT.IS_FAVORITE)
+      .equals(filter.isFavorite);
+  }
+  if (filter.name) {
+    contactsQuery = contactsQuery.where(CONTACT.NAME, {
+      $regex: new RegExp(filter.name, 'i'),
+    });
+  }
+  if (filter.phoneNumber) {
+    contactsQuery = contactsQuery.where(CONTACT.PHONE_NUMBER, {
+      $regex: new RegExp(filter.phoneNumber, 'i'),
+    });
+  }
+  if (filter.email) {
+    contactsQuery = contactsQuery.where(CONTACT.EMAIL, {
+      $regex: new RegExp(filter.email, 'i'),
+    });
   }
   const [contacts, contactsCount] = await Promise.all([
-    Models.ContactModel.find({ userId })
+    contactsQuery
       .skip(skip)
       .limit(perPage)
-      .merge(contactsQuery)
       .sort({ [sortBy]: sortOrder })
       .exec(),
     Models.ContactModel.countDocuments({ userId }).exec(),

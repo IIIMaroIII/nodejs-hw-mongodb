@@ -6,7 +6,6 @@ content:
       required:
         - status
         - message
-        - data
       properties:
         status:
           type: integer
@@ -14,3 +13,6 @@ content:
         message:
           type: string
           example: 'Please provide the Authorization header'
+        data:
+          type: object
+          example: {}
