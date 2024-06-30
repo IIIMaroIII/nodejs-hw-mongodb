@@ -15,31 +15,31 @@ requestBody:
           - phoneNumber
         properties:
           name:
-            description: 'Contact`s name'
             type: string
+            description: 'Contact`s name'
             example: 'Ivan Durak'
           phoneNumber:
-            description: 'Contact`s phone number'
             type: string
+            description: 'Contact`s phone number'
             example: '380999999'
           email:
-            description: 'Contact`s email'
             type: string
+            description: 'Contact`s email'
             example: 'ivan_durak@example.com'
           isFavourite:
-            description: 'Is contact favorite'
             type: boolean
+            description: 'Is this contact favorite?'
             default: false
             example: true
           contactType:
-            description: 'Contact`s type'
             type: string
+            description: 'Contact`s type'
             enum: ['home', 'personal']
             default: 'personal'
             example: 'home'
           photo:
-            description: 'Contact`s photograph link'
             type: string
+            description: 'Contact`s photograph link'
             example: 'http://localhost:3000/auth/uploads/1719196919385_26702.jpg'
 responses:
   '201':
@@ -64,3 +64,5 @@ responses:
               $ref: ../../components/schemas/contact.yaml
   '401':
     $ref: ../../components/responses/401.yaml
+  '400':
+    $ref: ../../components/responses/400.yaml

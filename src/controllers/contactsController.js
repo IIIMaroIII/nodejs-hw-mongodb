@@ -1,3 +1,4 @@
+import { CLOUDINARY } from '../constants/constants.js';
 import { Services } from '../services/index.js';
 import { HttpError } from '../utils/HttpError.js';
 import { env } from '../utils/env.js';
@@ -41,7 +42,9 @@ export const getContactByIdController = async (req, res, next) => {
   });
 
   if (!result) {
-    return next(HttpError(404, `The contact with ${contactId} was not found!`));
+    return next(
+      HttpError(404, `The contact with id ${contactId} was not found!`),
+    );
   }
   res.json(
     ResponseMaker(
@@ -71,7 +74,7 @@ export const addNewContactController = async (req, res, next) => {
     photo: photoUrl,
   });
 
-  if (!result) return next(HttpError(500, 'Something went wrong!'));
+  if (!result) return next(HttpError(400, 'Bad request!'));
   res
     .status(201)
     .json(ResponseMaker(201, 'Successfully created a contact!', result));
@@ -86,7 +89,7 @@ export const updateContactController = async (req, res, next) => {
   let photoUrl;
 
   if (photo) {
-    if (env('ENABLE_CLOUDINARY') === 'true') {
+    if (env(CLOUDINARY.ENABLE_CLOUDINARY) === 'true') {
       photoUrl = await saveFileToCloudinary(photo);
     } else {
       photoUrl = await saveFileToUploadDir(photo);
@@ -102,7 +105,13 @@ export const updateContactController = async (req, res, next) => {
     return next(HttpError(404, `The contact with ${contactId} was not found!`));
   }
 
-  res.json(ResponseMaker(200, 'Successfully patched a contact!', result));
+  res.json(
+    ResponseMaker(
+      200,
+      `Successfully updated a contact by id ${contactId}}!`,
+      result,
+    ),
+  );
 };
 
 export const deleteContactController = async (req, res, next) => {
@@ -114,7 +123,9 @@ export const deleteContactController = async (req, res, next) => {
   });
 
   if (!result) {
-    return next(HttpError(404, `The contact with ${contactId} was not found!`));
+    return next(
+      HttpError(404, `The contact with id ${contactId} was not found!`),
+    );
   }
 
   res.status(204).send();

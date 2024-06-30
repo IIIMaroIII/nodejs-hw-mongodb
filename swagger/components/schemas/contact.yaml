@@ -1,8 +1,6 @@
 type: object
 required:
-  - _id
   - name
-  - userId
   - phoneNumber
 properties:
   _id:
@@ -14,7 +12,7 @@ properties:
     type: string
     example: 'Ivan Durak'
   userId:
-    description: 'UserId'
+    description: 'UserId will be automatically attached to the database, since you`ve logged in'
     type: string
     example: 666f9fbc6c7a6b62825a3c68
   phoneNumber:
