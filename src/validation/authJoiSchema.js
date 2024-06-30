@@ -16,7 +16,7 @@ const registerUserSchema = joi.object({
         'Please fill a valid email address in lowercase. Examples of valid email addresses: john.doe@example.com, john-doe@example.com, john@example.co.uk,john.doe@example.co.in',
       'any.required': 'Email address is required',
     }),
-  password: joi.string().required().messages({
+  password: joi.string().min(3).max(32).required().messages({
     'any.required': 'Password is required!',
   }),
 });
