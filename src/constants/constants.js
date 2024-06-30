@@ -70,3 +70,7 @@ export const CLOUDINARY = {
   NAME: 'CLOUDINARY_NAME',
   ENABLE_CLOUDINARY: 'ENABLE_CLOUDINARY',
 };
+
+export const SWAGGER = {
+  PATH: path.join(process.cwd(), 'docs', 'swagger.json'),
+};

@@ -6,13 +6,13 @@ import { ResponseMaker } from '../utils/responseMaker.js';
 
 export const authRegisterController = async (req, res, next) => {
   const user = await Services.registerUser(req.body);
-  if (!user) return next(HttpError(500, 'Something went wrong!'));
+  if (!user) return next(HttpError(500, 'Internal Server Error'));
   res.json(ResponseMaker(201, 'Successfully registered a user!', user));
 };
 
 export const authLoginController = async (req, res, next) => {
   const session = await Services.loginUser(req.body);
-  if (!session) return next(HttpError(500, 'Something went wrong!'));
+  if (!session) return next(HttpError(500, 'Internal Server Error'));
 
   GenerateCookie(session, res);
 
@@ -29,7 +29,7 @@ export const authRefreshController = async (req, res, next) => {
     sessionId: req.cookies.sessionId,
     refreshToken: req.cookies.refreshToken,
   });
-  if (!session) return next(HttpError(500, 'Something went wrong!'));
+  if (!session) return next(HttpError(500, 'Internal Server Error'));
 
   GenerateCookie(session, res);
 
