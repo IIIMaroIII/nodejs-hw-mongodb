@@ -1,5 +1,5 @@
 # Logs
-google-oauth.json
+/google-oauth.json
 logs
 *.log
 npm-debug.log*
