@@ -57,7 +57,7 @@ export const authLogoutController = async (req, res, next) => {
   res.status(204).send();
 };
 
-export const authRequestResetPasswordController = async (req, res, next) => {
+export const authRequestResetPasswordController = async (req, res) => {
   await Services.requestResetPassword(req.body.email);
   res.json(
     ResponseMaker(
@@ -68,7 +68,7 @@ export const authRequestResetPasswordController = async (req, res, next) => {
   );
 };
 
-export const authResetPwdController = async (req, res, next) => {
+export const authResetPwdController = async (req, res) => {
   await Services.resetPwd(req.body);
   res.json(ResponseMaker(200, 'The password has been successfully reset!', {}));
 };
