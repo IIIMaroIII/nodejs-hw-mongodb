@@ -2,7 +2,7 @@ import { CONTACT, SORT_ORDER } from '../constants/constants.js';
 import { Models } from '../db/models/index.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 
-export const getAllContacts = async ({
+const getAllContacts = async ({
   userId,
   page = 1,
   perPage = 3,
@@ -56,17 +56,13 @@ export const getAllContacts = async ({
   };
 };
 
-export const getContactById = async (payload) =>
+const getContactById = async (payload) =>
   (await Models.ContactModel.findOne(payload)) || null;
 
-export const addNewContact = async (payload) =>
+const addNewContact = async (payload) =>
   await Models.ContactModel.create(payload);
 
-export const updateContact = async (
-  { contactId, userId },
-  payload,
-  options = {},
-) =>
+const updateContact = async ({ contactId, userId }, payload, options = {}) =>
   await Models.ContactModel.findOneAndUpdate(
     { _id: contactId, userId },
     payload,
@@ -76,5 +72,13 @@ export const updateContact = async (
     },
   );
 
-export const deleteContact = async (id) =>
+const deleteContact = async (id) =>
   await Models.ContactModel.findOneAndDelete(id);
+
+export const contacts = {
+  getAllContacts,
+  getContactById,
+  addNewContact,
+  updateContact,
+  deleteContact,
+};

@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { randomBytes } from 'crypto';
 import bcrypt from 'bcrypt';
 import { Models } from '../db/models/index.js';
 import { HttpError } from '../utils/HttpError.js';
@@ -6,13 +7,13 @@ import { NewSession } from '../utils/NewSession.js';
 import { env } from '../utils/env.js';
 import { ENV_VARS, JWT, SMTP } from '../constants/constants.js';
 import { sendEmail } from '../utils/sendMail.js';
+import { googleOauth } from '../utils/googleOauth.js';
 
-export const registerUser = async (payload) => {
-  const userExists = await Models.UserModel.findOne({ email: payload.email });
-  if (userExists) throw HttpError(409, 'Email has had already in use!');
+const registerUser = async (payload) => {
+  const user = await Models.UserModel.findOne({ email: payload.email });
+  if (user) throw HttpError(409, 'Email has had already in use!');
 
   const encryptedPassword = await bcrypt.hash(payload.password, 10);
-  console.log('encryptedPassword', encryptedPassword);
 
   return await Models.UserModel.create({
     ...payload,
@@ -20,7 +21,7 @@ export const registerUser = async (payload) => {
   });
 };
 
-export const loginUser = async (payload) => {
+const loginUser = async (payload) => {
   const user = await Models.UserModel.findOne({ email: payload.email });
   if (!user) throw HttpError(404, 'User was not found!');
 
@@ -32,7 +33,7 @@ export const loginUser = async (payload) => {
   return await Models.SessionModel.create(NewSession(user._id));
 };
 
-export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
+const refreshUsersSession = async ({ sessionId, refreshToken }) => {
   const session = await Models.SessionModel.findOne({
     _id: sessionId,
     refreshToken,
@@ -51,11 +52,11 @@ export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
   return await Models.SessionModel.create({ ...newSession });
 };
 
-export const logoutUser = async ({ sessionId, refreshToken }) => {
+const logoutUser = async ({ sessionId, refreshToken }) => {
   if (!sessionId) throw HttpError(400, 'The session data was not provided!');
   await Models.SessionModel.deleteOne({ _id: sessionId, refreshToken });
 };
-export const requestResetPassword = async (email) => {
+const requestResetPassword = async (email) => {
   const user = await Models.UserModel.findOne({ email });
   if (!user) throw HttpError(404, 'The user hasn`t been found!');
 
@@ -78,7 +79,7 @@ export const requestResetPassword = async (email) => {
   }
 };
 
-export const resetPwd = async (payload) => {
+const resetPwd = async (payload) => {
   let entries;
   try {
     entries = jwt.verify(payload.token, env(JWT.SECRET));
@@ -102,4 +103,37 @@ export const resetPwd = async (payload) => {
       throw HttpError(401, 'The token is expired or invalid');
     throw error;
   }
+};
+
+const loginOrSignupWithGoogle = async (code) => {
+  const loginTicket = await googleOauth.validateCode(code);
+  const payload = loginTicket.getPayload();
+
+  if (!payload) throw HttpError(401, 'Unauthorized');
+
+  let user = await Models.UserModel.findOne({ email: payload.email });
+
+  if (!user) {
+    const password = await bcrypt.hash(randomBytes(10), 10);
+
+    user = await Models.UserModel.create({
+      email: payload.email,
+      name: googleOauth.getFullNameFromGoogleTokenPayload(payload),
+      password,
+    });
+  }
+
+  await Models.SessionModel.deleteOne({ userId: user.id });
+
+  return await Models.SessionModel.create(NewSession(user.id));
+};
+
+export const auth = {
+  registerUser,
+  loginUser,
+  refreshUsersSession,
+  logoutUser,
+  requestResetPassword,
+  resetPwd,
+  loginOrSignupWithGoogle,
 };

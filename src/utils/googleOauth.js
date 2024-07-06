@@ -1,10 +1,13 @@
+import path from 'node:path';
 import { readFile } from 'fs/promises';
 import { GOOGLE_OAUTH } from '../constants/constants.js';
 import { OAuth2Client } from 'google-auth-library';
 import { env } from './env.js';
 import { HttpError } from './HttpError.js';
 
-const googleConfig = JSON.parse(await readFile(GOOGLE_OAUTH.PATH_JSON));
+const pathJson = path.join(process.cwd(), 'google-oauth.json');
+
+const googleConfig = JSON.parse(await readFile(pathJson));
 
 const googleOauthClient = new OAuth2Client({
   clientId: env(GOOGLE_OAUTH.CLIENT_ID),
@@ -13,11 +16,11 @@ const googleOauthClient = new OAuth2Client({
 });
 
 const generateAuthUrl = () => {
-  googleOauthClient.generateAuthUrl({
+  return googleOauthClient.generateAuthUrl({
     access_type: 'offline',
     scope: [
-      '<https://www.googleapis.com/auth/userinfo.email>',
-      '<https://www.googleapis.com/auth/userinfo.profile>',
+      'https://www.googleapis.com/auth/userinfo.email',
+      'https://www.googleapis.com/auth/userinfo.profile',
     ],
   });
 };
@@ -37,11 +40,10 @@ const getFullNameFromGoogleTokenPayload = (payload) => {
   let fullName = 'Guest';
 
   if (payload.given_name && payload.family_name) {
-    fullName = `${payload.given_name} ${payload.family_name}`;
+    return (fullName = `${payload.given_name} ${payload.family_name}`);
   }
-  if (payload.given_name) {
-    fullName = payload.given_name;
-  }
+
+  fullName = payload.given_name;
   return fullName;
 };
 

@@ -39,7 +39,7 @@ const loginUserSchema = joi.object({
   }),
 });
 
-export const requestResetPasswordSchema = joi.object({
+const requestResetPasswordSchema = joi.object({
   email: joi
     .string()
     .trim()
@@ -54,7 +54,7 @@ export const requestResetPasswordSchema = joi.object({
     }),
 });
 
-export const resetPwdSchema = joi.object({
+const resetPwdSchema = joi.object({
   token: joi.string().required().messages({
     'any.required': 'Token is required!',
   }),
@@ -63,9 +63,17 @@ export const resetPwdSchema = joi.object({
   }),
 });
 
+const loginWithGoogleAuthSchema = joi.object({
+  code: joi.string().required().messages({
+    'any.required': 'Code is required!',
+    'string.code': 'Code must be a string!',
+  }),
+});
+
 export const auth = {
   registerUserSchema,
   loginUserSchema,
   requestResetPasswordSchema,
   resetPwdSchema,
+  loginWithGoogleAuthSchema,
 };
