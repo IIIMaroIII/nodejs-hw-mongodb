@@ -12,28 +12,31 @@ export const contactsRouter = Router();
 contactsRouter.use('/:contactId', validateMongoId('contactId'));
 contactsRouter.use(authenticate);
 
-contactsRouter.get('', ctrlWrapper(Controllers.getAllContactsController));
+contactsRouter.get(
+  '',
+  ctrlWrapper(Controllers.contacts.getAllContactsController),
+);
 
 contactsRouter.get(
   '/:contactId',
-  ctrlWrapper(Controllers.getContactByIdController),
+  ctrlWrapper(Controllers.contacts.getContactByIdController),
 );
 
 contactsRouter.post(
   '',
   upload.single('photo'),
   validateBody(JoiSchemas.contacts.newContactSchema),
-  ctrlWrapper(Controllers.addNewContactController),
+  ctrlWrapper(Controllers.contacts.addNewContactController),
 );
 
 contactsRouter.patch(
   '/:contactId',
   upload.single('photo'),
   validateBody(JoiSchemas.contacts.patchSchema),
-  ctrlWrapper(Controllers.updateContactController),
+  ctrlWrapper(Controllers.contacts.updateContactController),
 );
 
 contactsRouter.delete(
   '/:contactId',
-  ctrlWrapper(Controllers.deleteContactController),
+  ctrlWrapper(Controllers.contacts.deleteContactController),
 );

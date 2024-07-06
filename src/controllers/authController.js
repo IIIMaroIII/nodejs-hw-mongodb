@@ -2,15 +2,16 @@ import { COOKIE } from '../constants/constants.js';
 import { Services } from '../services/index.js';
 import { GenerateCookie } from '../utils/GenerateCookie.js';
 import { HttpError } from '../utils/HttpError.js';
+import { googleOauth } from '../utils/googleOauth.js';
 import { ResponseMaker } from '../utils/responseMaker.js';
 
-export const authRegisterController = async (req, res, next) => {
+const authRegisterController = async (req, res, next) => {
   const user = await Services.registerUser(req.body);
   if (!user) return next(HttpError(500, 'Internal Server Error'));
   res.json(ResponseMaker(201, 'Successfully registered a user!', user));
 };
 
-export const authLoginController = async (req, res, next) => {
+const authLoginController = async (req, res, next) => {
   const session = await Services.loginUser(req.body);
   if (!session) return next(HttpError(500, 'Internal Server Error'));
 
@@ -23,7 +24,7 @@ export const authLoginController = async (req, res, next) => {
   );
 };
 
-export const authRefreshController = async (req, res, next) => {
+const authRefreshController = async (req, res, next) => {
   console.log('req.cookies', req.cookies);
   const session = await Services.refreshUsersSession({
     sessionId: req.cookies.sessionId,
@@ -40,7 +41,7 @@ export const authRefreshController = async (req, res, next) => {
   );
 };
 
-export const authLogoutController = async (req, res, next) => {
+const authLogoutController = async (req, res, next) => {
   if (!req.cookies.sessionId || !req.cookies.refreshToken)
     throw next(
       HttpError(
@@ -57,7 +58,7 @@ export const authLogoutController = async (req, res, next) => {
   res.status(204).send();
 };
 
-export const authRequestResetPasswordController = async (req, res) => {
+const authRequestResetPasswordController = async (req, res) => {
   await Services.requestResetPassword(req.body.email);
   res.json(
     ResponseMaker(
@@ -68,7 +69,23 @@ export const authRequestResetPasswordController = async (req, res) => {
   );
 };
 
-export const authResetPwdController = async (req, res) => {
+const authResetPwdController = async (req, res) => {
   await Services.resetPwd(req.body);
   res.json(ResponseMaker(200, 'The password has been successfully reset!', {}));
+};
+
+const getGoogleAuthUrlController = async (req, res) => {
+  const url = googleOauth.generateAuthUrl();
+
+  res.json(ResponseMaker(200, 'Successfully got Google OAuth url!'), url);
+};
+
+export const auth = {
+  authRegisterController,
+  authLoginController,
+  authRefreshController,
+  authLogoutController,
+  authRequestResetPasswordController,
+  authResetPwdController,
+  getGoogleAuthUrlController,
 };
