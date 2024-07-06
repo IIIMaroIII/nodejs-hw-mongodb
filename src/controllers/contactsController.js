@@ -20,7 +20,7 @@ const getAllContactsController = async (req, res) => {
   const { sortBy, sortOrder } = parseSortParams(req.query);
   const filter = parseFilterParams(req.query);
 
-  const result = await Services.getAllContacts({
+  const result = await Services.contacts.getAllContacts({
     userId: req.user.id,
     page,
     perPage,
@@ -36,7 +36,7 @@ const getAllContactsController = async (req, res) => {
 const getContactByIdController = async (req, res, next) => {
   const { contactId } = req.params;
 
-  const result = await Services.getContactById({
+  const result = await Services.contacts.getContactById({
     _id: contactId,
     userId: req.user.id,
   });
@@ -68,7 +68,7 @@ const addNewContactController = async (req, res, next) => {
     }
   }
 
-  const result = await Services.addNewContact({
+  const result = await Services.contacts.addNewContact({
     ...req.body,
     userId: req.user.id,
     photo: photoUrl,
@@ -96,7 +96,7 @@ const updateContactController = async (req, res, next) => {
     }
   }
 
-  const result = await Services.updateContact(
+  const result = await Services.contacts.updateContact(
     { contactId, userId },
     { ...body, photo: photoUrl },
   );
@@ -117,7 +117,7 @@ const updateContactController = async (req, res, next) => {
 const deleteContactController = async (req, res, next) => {
   const { contactId } = req.params;
 
-  const result = await Services.deleteContact({
+  const result = await Services.contacts.deleteContact({
     _id: contactId,
     userId: req.user.id,
   });

@@ -41,3 +41,9 @@ authRouter.get(
   '/get-oauth-url',
   ctrlWrapper(Controllers.auth.getGoogleAuthUrlController),
 );
+
+authRouter.post(
+  '/confirm-oauth',
+  validateBody(JoiSchemas.auth.loginWithGoogleAuthSchema),
+  ctrlWrapper(Controllers.auth.loginWithGoogleController),
+);
