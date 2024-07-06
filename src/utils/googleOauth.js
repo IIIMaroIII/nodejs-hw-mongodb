@@ -12,7 +12,7 @@ const googleConfig = JSON.parse(await readFile(pathJson));
 const googleOauthClient = new OAuth2Client({
   clientId: env(GOOGLE_OAUTH.CLIENT_ID),
   clientSecret: env(GOOGLE_OAUTH.CLIENT_SECRET),
-  redirectUri: googleConfig.web.redirect_uris[0],
+  redirectUri: GOOGLE_OAUTH.REDIRECT_URIS,
 });
 
 const generateAuthUrl = () => {
