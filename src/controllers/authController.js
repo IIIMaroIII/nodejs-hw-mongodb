@@ -84,9 +84,6 @@ const getGoogleAuthUrlController = async (req, res) => {
 };
 
 const loginWithGoogleController = async (req, res) => {
-  if (!req.body && !req.body.code)
-    throw HttpError(500, 'Something wen wrong in loginWithGoogleController');
-
   const session = await Services.auth.loginOrSignupWithGoogle(req.body.code);
 
   GenerateCookie(session, res);
