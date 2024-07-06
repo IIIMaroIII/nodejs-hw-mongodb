@@ -9,13 +9,13 @@ import { ResponseMaker } from '../utils/responseMaker.js';
 import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 
-export const homeController = (req, res) => {
+const homeController = (req, res) => {
   res.json(
     ResponseMaker(200, 'Hey, what`s been up? This is my first backend`s!'),
   );
 };
 
-export const getAllContactsController = async (req, res) => {
+const getAllContactsController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
   const { sortBy, sortOrder } = parseSortParams(req.query);
   const filter = parseFilterParams(req.query);
@@ -33,7 +33,7 @@ export const getAllContactsController = async (req, res) => {
   );
 };
 
-export const getContactByIdController = async (req, res, next) => {
+const getContactByIdController = async (req, res, next) => {
   const { contactId } = req.params;
 
   const result = await Services.getContactById({
@@ -55,7 +55,7 @@ export const getContactByIdController = async (req, res, next) => {
   );
 };
 
-export const addNewContactController = async (req, res, next) => {
+const addNewContactController = async (req, res, next) => {
   const photo = req.file;
 
   let photoUrl;
@@ -80,7 +80,7 @@ export const addNewContactController = async (req, res, next) => {
     .json(ResponseMaker(201, 'Successfully created a contact!', result));
 };
 
-export const updateContactController = async (req, res, next) => {
+const updateContactController = async (req, res, next) => {
   const { body } = req;
   const { contactId } = req.params;
   const { id: userId } = req.user;
@@ -114,7 +114,7 @@ export const updateContactController = async (req, res, next) => {
   );
 };
 
-export const deleteContactController = async (req, res, next) => {
+const deleteContactController = async (req, res, next) => {
   const { contactId } = req.params;
 
   const result = await Services.deleteContact({
@@ -129,4 +129,13 @@ export const deleteContactController = async (req, res, next) => {
   }
 
   res.status(204).send();
+};
+
+export const contacts = {
+  homeController,
+  getAllContactsController,
+  getContactByIdController,
+  addNewContactController,
+  updateContactController,
+  deleteContactController,
 };

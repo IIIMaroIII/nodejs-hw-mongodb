@@ -74,3 +74,9 @@ export const CLOUDINARY = {
 export const SWAGGER = {
   PATH: path.join(process.cwd(), 'docs', 'swagger.json'),
 };
+
+export const GOOGLE_OAUTH = {
+  CLIENT_ID: 'GOOGLE_OAUTH_CLIENT_ID',
+  CLIENT_SECRET: 'GOOGLE_OAUTH_CLIENT_SECRET',
+  PATH_JSON: path.join(process.cwd(), 'google-oauth.json'),
+};

@@ -9,27 +9,35 @@ export const authRouter = express.Router();
 authRouter.post(
   '/register',
   validateBody(JoiSchemas.auth.registerUserSchema),
-  ctrlWrapper(Controllers.authRegisterController),
+  ctrlWrapper(Controllers.auth.authRegisterController),
 );
 
 authRouter.post(
   '/login',
   validateBody(JoiSchemas.auth.loginUserSchema),
-  ctrlWrapper(Controllers.authLoginController),
+  ctrlWrapper(Controllers.auth.authLoginController),
 );
 
-authRouter.post('/refresh', ctrlWrapper(Controllers.authRefreshController));
+authRouter.post(
+  '/refresh',
+  ctrlWrapper(Controllers.auth.authRefreshController),
+);
 
-authRouter.post('/logout', ctrlWrapper(Controllers.authLogoutController));
+authRouter.post('/logout', ctrlWrapper(Controllers.auth.authLogoutController));
 
 authRouter.post(
   '/request-reset-password',
   validateBody(JoiSchemas.auth.requestResetPasswordSchema),
-  ctrlWrapper(Controllers.authRequestResetPasswordController),
+  ctrlWrapper(Controllers.auth.authRequestResetPasswordController),
 );
 
 authRouter.post(
   '/reset-pwd',
   validateBody(JoiSchemas.auth.resetPwdSchema),
-  ctrlWrapper(Controllers.authResetPwdController),
+  ctrlWrapper(Controllers.auth.authResetPwdController),
+);
+
+authRouter.get(
+  '/get-oauth-url',
+  ctrlWrapper(Controllers.auth.getGoogleAuthUrlController),
 );
