@@ -12,8 +12,8 @@ tags:
   - name: Auth
     description: Auth operations.
 servers:
-  - url: http://localhost:3000
-  - url: https://example.com/api/v1
+  - url: https://api.contacts-backend.kesug.com
+  - url: https://nodejs-hw-mongodb-ebwt.onrender.com
 paths:
   /auth/register:
     post:
